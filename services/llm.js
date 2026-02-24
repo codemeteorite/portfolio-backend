@@ -18,7 +18,7 @@ ${userMessage}
 `;
 
   const response = await ai.models.generateContent({
-    model: "gemini-flash-lite-latest",
+    model: "gemini-1.5-flash",
     contents: prompt,
   });
 
