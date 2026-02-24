@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
-import { generateReply } from "./services/llmService.js";
+import { generateReply } from "./services/llm.js";
 
 dotenv.config();
 
