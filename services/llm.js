@@ -1,4 +1,4 @@
-// services/llmService.js
+// services/llm.js
 
 import { GoogleGenAI } from "@google/genai";
 import { portfolioContext } from "../data/portfolioContext.js";
