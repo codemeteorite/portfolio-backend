@@ -1,5 +1,3 @@
-// services/llm.js
-
 import { GoogleGenAI } from "@google/genai";
 import { portfolioContext } from "../data/portfolioContext.js";
 
@@ -20,9 +18,12 @@ ${userMessage}
 `;
 
   const response = await ai.models.generateContent({
-   model: "gemini-flash-lite-latest",
+    model: "gemini-2.5-flash-lite",
     contents: prompt,
   });
 
-  return response.text;
+  return (
+    response.candidates?.[0]?.content?.parts?.[0]?.text ||
+    "No response from model."
+  );
 }
