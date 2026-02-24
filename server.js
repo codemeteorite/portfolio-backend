@@ -26,7 +26,9 @@ app.use(morgan("dev"));
 // ==============================
 const allowedOrigins = [
   "https://yahiya.xyz",
+  "https://www.yahiya.xyz",
   "http://yahiya.xyz",
+  "http://www.yahiya.xyz",
   "http://localhost:5500",
   "http://127.0.0.1:5500"
 ];
