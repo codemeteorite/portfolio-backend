@@ -12,6 +12,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ==============================
+// PROXY CONFIGURATION (For Render/Heroku)
+// ==============================
+app.set("trust proxy", 1);
+
+// ==============================
 // SECURITY HEADERS
 // ==============================
 app.use(helmet());
@@ -61,11 +66,11 @@ app.use(express.json({ limit: "10kb" }));
 // ==============================
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 50,
+  max: 5, // Reduced from 50 to 5 to protect daily Gemini quota
   standardHeaders: true,
   legacyHeaders: false,
   message: {
-    error: "Too many requests. Calm down."
+    error: "Too many requests. Please try again later."
   }
 });
 
