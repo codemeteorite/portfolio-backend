@@ -65,8 +65,8 @@ app.use(express.json({ limit: "10kb" }));
 // RATE LIMITING
 // ==============================
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5, // Reduced from 50 to 5 to protect daily Gemini quota
+  windowMs: 60 * 1000, // 1 minute
+  max: 20, // 20 requests per minute
   standardHeaders: true,
   legacyHeaders: false,
   message: {
