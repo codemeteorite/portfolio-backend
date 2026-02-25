@@ -1,14 +1,14 @@
 // services/llm.js
 
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 import { portfolioContext } from "../data/portfolioContext.js";
 
 // Simple in-memory cache to save on API calls
 const cache = new Map();
 
 export async function generateReply(userMessage) {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is missing from environment.");
+  if (!process.env.GROQ_API_KEY) {
+    throw new Error("GROQ_API_KEY is missing from environment.");
   }
 
   // Check cache first
@@ -18,37 +18,40 @@ export async function generateReply(userMessage) {
     return cache.get(normalizedMessage);
   }
 
-  const ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
-
-  const prompt = `
-${portfolioContext}
-
-User Question:
-${userMessage}
-`;
+  const groq = new Groq({
+    apiKey: process.env.GROQ_API_KEY,
+  });
 
   try {
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: portfolioContext
+        },
+        {
+          role: "user",
+          content: userMessage,
+        },
+      ],
+      model: "llama-3.3-70b-versatile",
+      temperature: 0.7,
+      max_tokens: 1024,
+    });
 
-<<<<<<< HEAD
-  return (
-    response.candidates?.[0]?.content?.parts?.[0]?.text ||
-    "No response from model."
-  );
-}
-=======
+    const text = chatCompletion.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response.";
+
     // Store in cache
     cache.set(normalizedMessage, text);
 
     return text;
   } catch (error) {
+    // Groq rate limit/quota error is often 429
     if (error.status === 429 || error.message?.includes("429")) {
-      console.error("Gemini Quota Exceeded:", error);
+      console.error("Groq Quota Exceeded:", error);
       return "My Working Hours are done. I'll be back Tomorrow 😴";
     }
+    console.error("Groq Error:", error);
     throw error;
   }
 }
->>>>>>> 31621b1 (feat: implement trust proxy, quota-aware rate limiting, and in-memory caching for Gemini)
